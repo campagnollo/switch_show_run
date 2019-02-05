@@ -15,7 +15,7 @@ class switches():
 
     def pull_run(self):
         self.remote.connect(hostname=self.ip, port=22, username=self.user, password=self.password)
-        self.stdin, self.stdout, self.stderr = self.remote_conn_pre.exec_command('sh run')
+        self.stdin, self.stdout, self.stderr = self.remote.exec_command('sh run')
 
 
     def save_run(self):
