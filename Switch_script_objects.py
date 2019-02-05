@@ -31,7 +31,7 @@ class switches():
 
 
 def main():
-    user = input('Enter Username: ')
+    user = raw_input('Enter Username: ')
     password = getpass('Enter Password: ')
     ips=[]
     with open('IP-List.txt', 'r') as ip_list:
