@@ -1,7 +1,7 @@
 import paramiko
 import socket
 from getpass import (getuser, getpass)
-
+import platform
 
 class switches():
 
@@ -10,11 +10,11 @@ class switches():
         self.password=password
         self.ip=ip
         self.remote = paramiko.SSHClient()
-        self.remote.set_missing_key_policy(paramiko.AutoAddPolicy())
-
+        #self.remote.set_missing_key_policy(paramiko.AutoAddPolicy())
+        self.remote.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
     def pull_run(self):
-        self.remote.connect(hostname=self.ip, port=22, username=self.user, password=self.password)
+        self.remote.connect(hostname=self.ip, port=22, username=self.user, password=self.password, timeout=10)
         self.stdin, self.stdout, self.stderr = self.remote.exec_command('sh run')
 
 
@@ -26,12 +26,12 @@ class switches():
     def switch_close(self):
         self.remote.close()
 
-    def success(self):
+    def ip_id(self):
         return self.ip
 
-
 def main():
-    user = raw_input('Enter Username: ')
+
+    user = input("Enter Username: ")
     password = getpass('Enter Password: ')
     ips=[]
     with open('IP-List.txt', 'r') as ip_list:
@@ -43,20 +43,21 @@ def main():
             ips[i].pull_run()
             ips[i].save_run()
             ips[i].switch_close()
-            print("Connection to %s successful." %ips[i].success())
+            print("Connection to %s successful." % ips[i].ip_id())
         except socket.gaierror:
-            print('Could not connect to %s \n' % ip)
+            print('Could not connect to %s \n' % ips[i].ip_id())
             # continue
         except paramiko.AuthenticationException:
-            print('Could not authenticate to %s \n' % ip)
+            print('Could not authenticate to %s \n' % ips[i].ip_id())
             # continue
         except socket.error:
-            print('Connection Timed out: %s \n' % ip)
+            print('Connection Timed out: %s \n' % ips[i].ip_id())
             # continue
         except paramiko.SSHException:
-            print('Incompatible ssh peer: %s \n' % ip)
+            print('Incompatible ssh peer: %s \n' % ips[i].ip_id())
             # continue
-
+        except Exception:
+            print("Unexpected error")
 
 if __name__ == '__main__':
     main()
