@@ -9,13 +9,11 @@ class switches():
         self.password=password
         self.ip=ip
         self.remote = paramiko.SSHClient()
-        #self.remote.set_missing_key_policy(paramiko.AutoAddPolicy())
         self.remote.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
     def pull_run(self):
         self.remote.connect(hostname=self.ip, port=22, username=self.user, password=self.password, timeout=10)
         self.stdin, self.stdout, self.stderr = self.remote.exec_command('sh run')
-
 
     def save_run(self):
         file = open(self.ip + ' sh_route.txt', 'a')
