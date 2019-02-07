@@ -1,7 +1,6 @@
 import paramiko
 import socket
 from getpass import (getuser, getpass)
-import platform
 
 class switches():
 
